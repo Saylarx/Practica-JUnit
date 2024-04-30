@@ -16,20 +16,27 @@ class SistemaVentaEntradasTest {
 		sist = new SistemaVentaEntradas();
 	}
 
+//	@Test
+//	void testAnyadirSalaOk() {
+//
+//		assertTrue(sist.anyadirSala(1, "Matrix"));
+//		Sala sala1 = new Sala(1, "Matrix");
+//		sist.getSalas().add(sala1);
+//		assertTrue(sist.getSalas().contains(sala1));
+//
+//	}
+	
 	@Test
 	void testAnyadirSalaOk() {
-
-		assertTrue(sist.anyadirSala(1, "Matrix"));
-		Sala sala1 = new Sala(1, "Matrix");
-		sist.getSalas().add(sala1);
-		assertTrue(sist.getSalas().contains(sala1));
-
+	    assertTrue(sist.anyadirSala(1, "Matrix"));
+	    assertTrue(sist.getSalas().stream().anyMatch(sala -> sala.getNumSala() == 1 && sala.getPelicula().equals("Matrix")));
 	}
 
-	@Test
-	void testAnyadirSala() {
 
-	}
+//	@Test
+//	void testAnyadirSala() {
+//
+//	}
 
 //	@Test
 //	void testComprarEntrada() {
