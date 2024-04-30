@@ -1,3 +1,4 @@
+package cine;
 
 public class Entrada {
 	private final int numSala;
