@@ -1,8 +1,11 @@
 package cine;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 class SistemaVentaEntradasTest {
@@ -10,7 +13,7 @@ class SistemaVentaEntradasTest {
 	static SistemaVentaEntradas sist;
 
 	@BeforeAll
-	static void crearInstanciaCalc() {
+	static void crearInstanciaSist() {
 
 		System.out.println("ANTES DE TODOS LOS TEST");
 		sist = new SistemaVentaEntradas();
@@ -21,25 +24,8 @@ class SistemaVentaEntradasTest {
 		sist.vaciarCine();
 	}
 
-//	@Test
-//	void testAnyadirSalaOk() {
-//
-//		assertTrue(sist.anyadirSala(1, "Matrix"));
-//		Sala sala1 = new Sala(1, "Matrix");
-//		sist.getSalas().add(sala1);
-//		assertTrue(sist.getSalas().contains(sala1));
-//
-//	}
-	
 	@Test
-	void testAnyadirSalaOk() {
-	    assertTrue(sist.anyadirSala(1, "Matrix"));
-	    assertTrue(sist.getSalas().stream().anyMatch(sala -> sala.getNumSala() == 1 && sala.getPelicula().equals("Matrix")));
-	}
-
-
-	@Test
-	void testAnyadirSalaOk() {
+	void testAnyadirSala() {
 
 		assertTrue(sist.anyadirSala(1, "Matrix"));
 		Sala sala1 = new Sala(1, null);
@@ -68,15 +54,37 @@ class SistemaVentaEntradasTest {
 
 	}
 
+	@Test
+	void testComprarEntrada2() {
+		sist.anyadirSala(1, "Titanic");
+
+//		Comprobar comprar entrada ok
+		assertTrue(sist.comprarEntrada(1, 5));
+
+//		Comprobar comprar entrada false sala inexistente
+		assertFalse(sist.comprarEntrada(2, 10));
+
+//		Comprobar comprar entrada false butaca fuera de rango
+		assertFalse(sist.comprarEntrada(1, 35));
+		assertFalse(sist.comprarEntrada(1, 0));
+//
+//		Entrada entrada1 = new Entrada(1, 5, 12);
+//		sist.getEntradas().add(entrada1);
+//		assertTrue(sist.getEntradas().contains(entrada1));
+	}
+
+	@Test
+	void testComprarEntradaPrecios() {
+		double resultado = sist.calcularPrecioEntrada(3);
+		assertEquals(10, resultado);
+
+	}
+
 //	@Test
 //	void testAnyadirSala() {
 //
 //	}
 
-//	@Test
-//	void testComprarEntrada() {
-//		fail("Not yet implemented");
-//	}
 //
 //	@Test
 //	void testGetEntradasVendidasPorSala() {
