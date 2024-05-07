@@ -1,109 +1,110 @@
 package cine;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import java.util.ArrayList;
 
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+public class SistemaVentaEntradas {
+	private ArrayList<Entrada> entradas;
+	private ArrayList<Sala> salas;
+	public static final int MAX_SALAS = 5;
+	public static final int MAX_BUTACAS_POR_SALA = 30;
 
-class SistemaVentaEntradasTest {
-
-	static SistemaVentaEntradas sist;
-
-	@BeforeAll
-	static void crearInstanciaSist() {
-
-		System.out.println("ANTES DE TODOS LOS TEST");
-		sist = new SistemaVentaEntradas();
+	public SistemaVentaEntradas() {
+		this.salas = new ArrayList<>();
+		this.entradas = new ArrayList<>();
 	}
 
-	@BeforeEach
-	void limpiarCine() {
-		sist.vaciarCine();
+	/**
+	 * Añade una sala nueva
+	 * 
+	 * @param numero
+	 * @param pelicula
+	 * @return
+	 */
+	public boolean anyadirSala(int numero, String pelicula) {
+
+		Sala nuevaSala = new Sala(numero, pelicula);
+
+		if (salas.contains(nuevaSala) || salas.size() >= MAX_SALAS) {
+			System.out.println("La sala ya existe o se ha alcanzado el máximo número de salas");
+			return false; // La sala ya existe o se ha alcanzado el máximo número de salas
+		}
+		salas.add(nuevaSala);
+		return true;
 	}
 
-	@Test
-	void testAnyadirSala() {
+	public boolean comprarEntrada(int sala, int butaca) {
 
-		assertTrue(sist.anyadirSala(1, "Matrix"));
-		Sala sala1 = new Sala(1, null);
-		assertTrue(sist.getSalas().contains(sala1));
+		if (!existeSala(sala)) {
+			System.out.println("La sala no existe");
+			return false; // La sala no existe
+		}
+		if (butaca <= 0 || butaca > MAX_BUTACAS_POR_SALA) {
+			System.out.println("Número de butaca inválido");
+			return false; // Número de butaca inválido
+		}
+		Entrada nuevaEntrada = new Entrada(sala, butaca, calcularPrecioEntrada(butaca));
+		return entradas.add(nuevaEntrada);
 	}
 
-	@Test
-	void testAnyadirSalaRepetida() {
-
-		sist.anyadirSala(1, "Matrix");
-		assertFalse(sist.anyadirSala(1, "Matrix"));
-		assertEquals(1, sist.getSalas().size());
-
-	}
-
-	@Test
-	void testAnyadirSalaMaximoSalas() {
-
-		sist.anyadirSala(1, "Matrix");
-		sist.anyadirSala(2, "Ready Player One");
-		sist.anyadirSala(3, "One Piece");
-		sist.anyadirSala(4, "Sonic");
-		sist.anyadirSala(5, "Torrente");
-		assertFalse(sist.anyadirSala(6, "Lo que el viento se llevó"));
-		assertEquals(5, sist.getSalas().size());
-
-	}
-
-	@Test
-	void testComprarEntrada2() {
-		sist.anyadirSala(1, "Titanic");
-
-//		Comprobar comprar entrada ok
-		assertTrue(sist.comprarEntrada(1, 5));
-
-//		Comprobar comprar entrada false sala inexistente
-		assertFalse(sist.comprarEntrada(2, 10));
-
-//		Comprobar comprar entrada false butaca fuera de rango
-		assertFalse(sist.comprarEntrada(1, 35));
-		assertFalse(sist.comprarEntrada(1, 0));
-//
-//		Entrada entrada1 = new Entrada(1, 5, 12);
-//		sist.getEntradas().add(entrada1);
-//		assertTrue(sist.getEntradas().contains(entrada1));
-	}
-
-	@Test
-	void testComprarEntradaPrecios() {
-		double resultado = sist.calcularPrecioEntrada(3);
-		assertEquals(10, resultado);
+	private boolean existeSala(int numSala) {
+		Sala salaBusqueda = new Sala(numSala, null);
+		return this.salas.contains(salaBusqueda);
 
 	}
 
-//	@Test
-//	void testAnyadirSala() {
-//
-//	}
+	public int getEntradasVendidasPorSala(int numero) {
+		int total = 0;
+		for (Entrada entrada : entradas) {
+			if (entrada.getNumSala() == numero) {
+				total++;
+			}
+		}
+		return total;
+	}
 
-//
-//	@Test
-//	void testGetEntradasVendidasPorSala() {
-//		fail("Not yet implemented");
-//	}
-//
-//	@Test
-//	void testTotalRecaudacion() {
-//		fail("Not yet implemented");
-//	}
-//
-//	@Test
-//	void testCalcularPrecioEntrada() {
-//		fail("Not yet implemented");
-//	}
-//
-//	@Test
-//	void testVaciarCine() {
-//		fail("Not yet implemented");
-//	}
+	public void mostrarCartelera() {
+		for (Sala sala : salas) {
+			System.out.println(sala);
+		}
+	}
+
+	public void mostrarEntradas() {
+		for (Entrada entrada : entradas) {
+			System.out.println(entrada);
+		}
+	}
+
+	public double totalRecaudacion() {
+		double total = 0.0;
+		for (Entrada entrada : entradas) {
+			total += entrada.getPrecio();
+		}
+		return total;
+	}
+
+	public double calcularPrecioEntrada(int numButaca) {
+		if (numButaca <= 10) {
+			return 10.0;
+		} else if (numButaca <= 20) {
+			return 8.0;
+		} else {
+			return 5.0;
+		}
+	}
+
+	// AÑADIDO POR PROFESOR //
+	public ArrayList<Entrada> getEntradas() {
+		return entradas;
+	}
+
+	public ArrayList<Sala> getSalas() {
+		return salas;
+	}
+
+	public void vaciarCine() {
+		getSalas().clear();
+		getEntradas().clear();
+	}
 
 }
+
